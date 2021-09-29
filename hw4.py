@@ -11,7 +11,7 @@ class Customer:
 
     # Reload some deposit into the customer's wallet.
     def reload_money(self,deposit):
-        self.wallet += deposit
+        self.wallet = self.wallet + deposit
 
     # The customer orders the food and there could be different cases   
     def validate_order(self, cashier, stall, item_name, quantity):
@@ -28,12 +28,15 @@ class Customer:
     # Submit_order takes a cashier, a stall and an amount as parameters, 
     # it deducts the amount from the customer’s wallet and calls the receive_payment method on the cashier object
     def submit_order(self, cashier, stall, amount): 
-        pass
+        self.cashier = cashier
+        self.stall = stall
+        self.amount = amount 
+        self.wallet = self.wallet - amount
+        self.receive_payment(self.earnings, amount)
 
     # The __str__ method prints the customer's information.    
     def __str__(self):
         return "Hello! My name is " + self.name + ". I have $" + str(self.wallet) + " in my payment card."
-
 
 # The Cashier class
 # The Cashier class represents a cashier at the market. 
@@ -53,8 +56,9 @@ class Cashier:
         self.directory.append(new_stall)
 
     # Receives payment from customer, and adds the money to the stall's earnings.
-    def receive_payment(self, stall, money):
-        stall.earnings += money
+    def receive_payment(self, earnings, money):
+        self.earnings = earnings
+        self.earnings = earnings + money
 
     # Places an order at the stall.
 	# The cashier pays the stall the cost.
@@ -72,8 +76,25 @@ class Cashier:
 ## Complete the Stall class here following the instructions in HW_4_instructions_rubric
 class Stall:
     
-    pass
+    def __init__(self, name, inventory, cost = 7, earnings = 0):
+        self.name = name
+        self.inventory = inventory
+        self.cost = cost
+        self.earnings = earnings
 
+    def process_order(self, food_name, quantity):
+        self.food_name = food_name
+        self.quantity = quantity
+        if self.statement == True:
+            self.inventory[food_name] = self.inventory[food_name] - quantity
+        else: 
+            print('This item is out stock')
+
+    def has_item(self):
+        if self.inventory[self.food_name, 'Food is not sold here'] >= self.quantity:
+            self.statement = True
+        else: 
+            self.statement = False
 
 class TestAllMethods(unittest.TestCase):
     
@@ -153,7 +174,7 @@ class TestAllMethods(unittest.TestCase):
 	# Check that the stall can properly see when it is empty
     def test_has_item(self):
         # Set up to run test cases
-
+        
         # Test to see if has_item returns True when a stall has enough items left
         # Please follow the instructions below to create three different kinds of test cases 
         # Test case 1: the stall does not have this food item: 
